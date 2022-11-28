@@ -1,13 +1,13 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:byte_bank/database/app_database.dart';
 import 'package:flutter/material.dart';
-
+import '../database/dao/contact_dao.dart';
 import '../models/contact.dart';
 import 'contacts_form.dart';
 
 class ContactsList extends StatelessWidget {
-  const ContactsList({super.key});
+
+  final ContactDao _dao = ContactDao(); 
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class ContactsList extends StatelessWidget {
       ),
       body: FutureBuilder(
           future:
-              Future.delayed(Duration(seconds: 1)).then((value) => findAll()),
+              Future.delayed(Duration(seconds: 1)).then((value) => _dao.findAll()),
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.waiting:
@@ -32,6 +32,18 @@ class ContactsList extends StatelessWidget {
                     ],
                   ),
                 );
+              case ConnectionState.none:
+                // ignore: todo
+                // TODO: Handle this case.
+                break;
+              case ConnectionState.active:
+                // ignore: todo
+                // TODO: Handle this case.
+                break;
+              case ConnectionState.done:
+                // ignore: todo
+                // TODO: Handle this case.
+                break;
             }
             final List<Contact>? contacts = snapshot.data;
             return ListView.builder(
@@ -44,13 +56,11 @@ class ContactsList extends StatelessWidget {
           }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context)
-              .push(
-                MaterialPageRoute(
-                  builder: (context) => ContactForm(),
-                ),
-              )
-              .then((newContact) => debugPrint(newContact.toString()));
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => ContactForm(),
+            ),
+          );
         },
         child: Icon(Icons.add),
       ),
